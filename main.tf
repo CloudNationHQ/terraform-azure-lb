@@ -6,6 +6,7 @@ resource "azurerm_lb" "lb" {
   sku                 = try(var.config.sku, "Standard")
   sku_tier            = try(var.config.sku_tier, "Regional")
   edge_zone           = try(var.config.edge_zone, null)
+  tags                = try(var.config.tags, var.tags)
 
   dynamic "frontend_ip_configuration" {
     for_each = lookup(
