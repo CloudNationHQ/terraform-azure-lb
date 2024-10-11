@@ -33,6 +33,7 @@ End-to-end testing is not conducted on these modules, as they are individual com
 - enables creation of multiple nat rules.
 - multiple tunnel interfaces on backend pools on gateway load balancers.
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -50,34 +51,35 @@ End-to-end testing is not conducted on these modules, as they are individual com
 
 | Name | Type |
 |------|------|
-| [azurerm_lb](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb) | resource |
-| [azurerm_lb_backend_address_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool) | resource |
-| [azurerm_lb_backend_address_pool_address](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool_address) | resource |
-| [azurerm_lb_nat_pool](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_pool) | resource |
-| [azurerm_lb_nat_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_rule) | resource |
-| [azurerm_lb_outbound_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_outbound_rule) | resource |
-| [azurerm_lb_probe](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_probe) | resource |
-| [azurerm_lb_rule](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) | resource |
+| [azurerm_lb.lb](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb) | resource |
+| [azurerm_lb_backend_address_pool.pools](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool) | resource |
+| [azurerm_lb_backend_address_pool_address.pool_addresses](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool_address) | resource |
+| [azurerm_lb_nat_pool.nat_pools](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_pool) | resource |
+| [azurerm_lb_nat_rule.nat_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_rule) | resource |
+| [azurerm_lb_outbound_rule.outbound_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_outbound_rule) | resource |
+| [azurerm_lb_probe.probes](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_probe) | resource |
+| [azurerm_lb_rule.rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) | resource |
 
 ## Inputs
 
-| Name | Description | Type | Required |
-| :-- | :-- | :-- | :-- |
-| `config` | contains load balancer configuration | `any` | yes |
-| `location` | default azure region to be used. | `string` | no |
-| `resource_group` | default resource group to be used. | `string` | no |
-| `tags` | tags to be added to the resources | `map(string)` | no |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_config"></a> [config](#input\_config) | contains load balancer configuration | `any` | n/a | yes |
+| <a name="input_location"></a> [location](#input\_location) | default azure region to be used. | `string` | `null` | no |
+| <a name="input_resource_group"></a> [resource\_group](#input\_resource\_group) | default resource group to be used. | `string` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | tags to be added to the resources | `map(string)` | `{}` | no |
 
 ## Outputs
 
 | Name | Description |
-| :-- | :-- |
-| `backend_pools` | contains load balancer backend pools |
-| `config` | contains load balancer configuration |
-| `nat_pools` | contains load balancer nat pools |
-| `nat_rules` | contains load balancer nat rules |
-| `probes` | contains load balancer probes |
-| `rules` | contains load balancer rules |
+|------|-------------|
+| <a name="output_backend_pools"></a> [backend\_pools](#output\_backend\_pools) | contains load balancer backend pools |
+| <a name="output_config"></a> [config](#output\_config) | contains load balancer configuration |
+| <a name="output_nat_pools"></a> [nat\_pools](#output\_nat\_pools) | contains load balancer nat pools |
+| <a name="output_nat_rules"></a> [nat\_rules](#output\_nat\_rules) | contains load balancer nat rules |
+| <a name="output_probes"></a> [probes](#output\_probes) | contains load balancer probes |
+| <a name="output_rules"></a> [rules](#output\_rules) | contains load balancer rules |
+<!-- END_TF_DOCS -->
 
 ## Testing
 
