@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.1.0...v1.2.0) (2024-11-11)
+
+
+### Features
+
+* enhance testing with sequential, parallel modes and flags for exceptions and skip-destroy ([#6](https://github.com/CloudNationHQ/terraform-azure-lb/issues/6)) ([11b0c5e](https://github.com/CloudNationHQ/terraform-azure-lb/commit/11b0c5ea0efad1e952ae126e69cf82094443049c))
+
 ## [1.1.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.0.0...v1.1.0) (2024-10-11)
 
 
