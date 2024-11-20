@@ -26,7 +26,7 @@ module "network" {
     name           = module.naming.virtual_network.name
     location       = module.rg.groups.demo.location
     resource_group = module.rg.groups.demo.name
-    address_space  = ["11.19.0.0/16"]
+    address_space  = ["10.19.0.0/16"]
   }
 }
 
