@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.2.0...v1.2.1) (2024-11-20)
+
+
+### Bug Fixes
+
+* bounced all modules to latest verion in usages ([#8](https://github.com/CloudNationHQ/terraform-azure-lb/issues/8)) ([5cd2956](https://github.com/CloudNationHQ/terraform-azure-lb/commit/5cd2956f316ac2a2f6ca2fa662944b1bd495041c))
+
 ## [1.2.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.1.0...v1.2.0) (2024-11-11)
 
 
