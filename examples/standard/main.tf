@@ -1,6 +1,6 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.1"
+  version = "~> 0.22"
 
   suffix = ["demo", "dev"]
 }
@@ -12,21 +12,21 @@ module "rg" {
   groups = {
     demo = {
       name     = module.naming.resource_group.name_unique
-      location = "germanywestcentral"
+      location = "westeurope"
     }
   }
 }
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 4.0"
+  version = "~> 8.0"
   naming  = local.naming
 
   vnet = {
     name           = module.naming.virtual_network.name
     location       = module.rg.groups.demo.location
     resource_group = module.rg.groups.demo.name
-    cidr           = ["10.19.0.0/16"]
+    address_space  = ["11.19.0.0/16"]
   }
 }
 
@@ -48,7 +48,7 @@ module "lb" {
   version = "~> 1.0"
 
   config = {
-    name           = module.naming.lb.name
+    name           = module.naming.lb.name_unique
     resource_group = module.rg.groups.demo.name
     location       = module.rg.groups.demo.location
     sku            = "Standard"
