@@ -6,7 +6,10 @@ resource "azurerm_lb" "lb" {
   sku                 = try(var.config.sku, "Standard")
   sku_tier            = try(var.config.sku_tier, "Regional")
   edge_zone           = try(var.config.edge_zone, null)
-  tags                = try(var.config.tags, var.tags)
+
+  tags = try(
+    var.config.tags, var.tags
+  )
 
   dynamic "frontend_ip_configuration" {
     for_each = lookup(
@@ -100,6 +103,9 @@ resource "azurerm_lb_nat_pool" "nat_pools" {
   frontend_port_end              = each.value.frontend_port_end
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_key
+  tcp_reset_enabled              = try(each.value.tcp_reset_enabled, null)
+  floating_ip_enabled            = try(each.value.floating_ip_enabled, null)
+  idle_timeout_in_minutes        = try(each.value.idle_timeout_in_minutes, 4)
 }
 
 # nat rules
@@ -125,6 +131,12 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
   frontend_port                  = each.value.frontend_port
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_key
+  enable_tcp_reset               = try(each.value.enable_tcp_reset, null)
+  idle_timeout_in_minutes        = try(each.value.idle_timeout_in_minutes, null)
+  enable_floating_ip             = try(each.value.enable_floating_ip, false)
+  frontend_port_start            = try(each.value.frontend_port_start, null)
+  frontend_port_end              = try(each.value.frontend_port_end, null)
+  backend_address_pool_id        = try(each.value.backend_address_pool_id, null)
 }
 
 # probes
@@ -153,6 +165,7 @@ resource "azurerm_lb_probe" "probes" {
   request_path        = try(each.value.request_path, null)
   interval_in_seconds = try(each.value.interval_in_seconds, null)
   number_of_probes    = try(each.value.number_of_probes, null)
+  probe_threshold     = try(each.value.probe_threshold, 1)
 }
 
 # rules
