@@ -1,11 +1,20 @@
 # load balancer
 resource "azurerm_lb" "lb" {
-  name                = var.config.name
-  resource_group_name = coalesce(lookup(var.config, "resource_group", null), var.resource_group)
-  location            = coalesce(lookup(var.config, "location", null), var.location)
-  sku                 = try(var.config.sku, "Standard")
-  sku_tier            = try(var.config.sku_tier, "Regional")
-  edge_zone           = try(var.config.edge_zone, null)
+  resource_group_name = coalesce(
+    lookup(
+      var.config, "resource_group", null
+    ), var.resource_group
+  )
+
+  location = coalesce(
+    lookup(var.config, "location", null
+    ), var.location
+  )
+
+  name      = var.config.name
+  sku       = var.config.sku
+  sku_tier  = var.config.sku_tier
+  edge_zone = var.config.edge_zone
 
   tags = try(
     var.config.tags, var.tags
@@ -18,14 +27,14 @@ resource "azurerm_lb" "lb" {
 
     content {
       name                                               = frontend_ip_configuration.key
-      zones                                              = try(frontend_ip_configuration.value.zones, null)
-      subnet_id                                          = try(frontend_ip_configuration.value.subnet_id, null)
-      private_ip_address_allocation                      = try(frontend_ip_configuration.value.private_ip_address_allocation, "Dynamic")
-      public_ip_prefix_id                                = try(frontend_ip_configuration.value.public_ip_prefix_id, null)
-      private_ip_address_version                         = try(frontend_ip_configuration.value.private_ip_address_version, null)
-      private_ip_address                                 = try(frontend_ip_configuration.value.private_ip_address, null)
-      public_ip_address_id                               = try(frontend_ip_configuration.value.public_ip_address_id, null)
-      gateway_load_balancer_frontend_ip_configuration_id = try(frontend_ip_configuration.value.gateway_load_balancer_frontend_ip_configuration_id, null)
+      zones                                              = frontend_ip_configuration.value.zones
+      subnet_id                                          = frontend_ip_configuration.value.subnet_id
+      private_ip_address_allocation                      = frontend_ip_configuration.value.private_ip_address_allocation
+      public_ip_prefix_id                                = frontend_ip_configuration.value.public_ip_prefix_id
+      private_ip_address_version                         = frontend_ip_configuration.value.private_ip_address_version
+      private_ip_address                                 = frontend_ip_configuration.value.private_ip_address
+      public_ip_address_id                               = frontend_ip_configuration.value.public_ip_address_id
+      gateway_load_balancer_frontend_ip_configuration_id = frontend_ip_configuration.value.gateway_load_balancer_frontend_ip_configuration_id
     }
   }
 }
@@ -38,8 +47,8 @@ resource "azurerm_lb_backend_address_pool" "pools" {
 
   name               = each.key
   loadbalancer_id    = azurerm_lb.lb.id
-  virtual_network_id = try(each.value.virtual_network_id, null)
-  synchronous_mode   = try(each.value.synchronous_mode, null)
+  virtual_network_id = each.value.virtual_network_id
+  synchronous_mode   = each.value.synchronous_mode
 
   dynamic "tunnel_interface" {
     for_each = lookup(each.value, "tunnel_interfaces", {})
@@ -68,15 +77,11 @@ resource "azurerm_lb_backend_address_pool_address" "pool_addresses" {
     ]) : item.key => item.value
   }
 
-  name                    = each.value.addr_key
-  backend_address_pool_id = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
-
-  backend_address_ip_configuration_id = try(
-    each.value.backend_address_ip_configuration_id, null
-  )
-
-  virtual_network_id = contains(keys(each.value), "backend_address_ip_configuration_id") ? null : try(each.value.virtual_network_id, null)
-  ip_address         = contains(keys(each.value), "backend_address_ip_configuration_id") ? null : try(each.value.ip_address, null)
+  name                                = each.value.addr_key
+  backend_address_pool_id             = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
+  backend_address_ip_configuration_id = each.value.backend_address_ip_configuration_id
+  virtual_network_id                  = each.value.virtual_network_id
+  ip_address                          = each.value.ip_address
 }
 
 # nat pools
@@ -103,9 +108,9 @@ resource "azurerm_lb_nat_pool" "nat_pools" {
   frontend_port_end              = each.value.frontend_port_end
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_key
-  tcp_reset_enabled              = try(each.value.tcp_reset_enabled, null)
-  floating_ip_enabled            = try(each.value.floating_ip_enabled, null)
-  idle_timeout_in_minutes        = try(each.value.idle_timeout_in_minutes, 4)
+  tcp_reset_enabled              = each.value.tcp_reset_enabled
+  floating_ip_enabled            = each.value.floating_ip_enabled
+  idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
 }
 
 # nat rules
@@ -131,12 +136,12 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
   frontend_port                  = each.value.frontend_port
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_key
-  enable_tcp_reset               = try(each.value.enable_tcp_reset, null)
-  idle_timeout_in_minutes        = try(each.value.idle_timeout_in_minutes, null)
-  enable_floating_ip             = try(each.value.enable_floating_ip, false)
-  frontend_port_start            = try(each.value.frontend_port_start, null)
-  frontend_port_end              = try(each.value.frontend_port_end, null)
-  backend_address_pool_id        = try(each.value.backend_address_pool_id, null)
+  enable_tcp_reset               = each.value.enable_tcp_reset
+  idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
+  enable_floating_ip             = each.value.enable_floating_ip
+  frontend_port_start            = each.value.frontend_port_start
+  frontend_port_end              = each.value.frontend_port_end
+  backend_address_pool_id        = each.value.backend_address_pool_id
 }
 
 # probes
@@ -161,11 +166,11 @@ resource "azurerm_lb_probe" "probes" {
   name                = each.value.name
   loadbalancer_id     = azurerm_lb.lb.id
   port                = each.value.port
-  protocol            = try(each.value.protocol, null)
-  request_path        = try(each.value.request_path, null)
-  interval_in_seconds = try(each.value.interval_in_seconds, null)
-  number_of_probes    = try(each.value.number_of_probes, null)
-  probe_threshold     = try(each.value.probe_threshold, 1)
+  protocol            = each.value.protocol
+  request_path        = each.value.request_path
+  interval_in_seconds = each.value.interval_in_seconds
+  number_of_probes    = each.value.number_of_probes
+  probe_threshold     = each.value.probe_threshold
 }
 
 # rules
@@ -192,11 +197,11 @@ resource "azurerm_lb_rule" "rules" {
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.pools[each.value.pool_key].id]
   probe_id                       = lookup(each.value, "probe", null) != null ? azurerm_lb_probe.probes[each.key].id : null
-  enable_floating_ip             = try(each.value.enable_floating_ip, null)
-  idle_timeout_in_minutes        = try(each.value.idle_timeout_in_minutes, null)
-  load_distribution              = try(each.value.load_distribution, null)
-  disable_outbound_snat          = try(each.value.disable_outbound_snat, true)
-  enable_tcp_reset               = try(each.value.enable_tcp_reset, null)
+  enable_floating_ip             = each.value.enable_floating_ip
+  idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
+  load_distribution              = each.value.load_distribution
+  disable_outbound_snat          = each.value.disable_outbound_snat
+  enable_tcp_reset               = each.value.enable_tcp_reset
 }
 
 # outbound rules
@@ -219,9 +224,9 @@ resource "azurerm_lb_outbound_rule" "outbound_rules" {
   name                     = each.value.outbound_rule_key
   protocol                 = each.value.protocol
   backend_address_pool_id  = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
-  allocated_outbound_ports = try(each.value.allocated_outbound_ports, null)
-  enable_tcp_reset         = try(each.value.enable_tcp_reset, null)
-  idle_timeout_in_minutes  = try(each.value.idle_timeout_in_minutes, null)
+  allocated_outbound_ports = each.value.allocated_outbound_ports
+  enable_tcp_reset         = each.value.enable_tcp_reset
+  idle_timeout_in_minutes  = each.value.idle_timeout_in_minutes
 
   dynamic "frontend_ip_configuration" {
     for_each = each.value.frontend_ip_configurations
