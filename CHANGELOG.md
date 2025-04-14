@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.4.0...v1.4.1) (2025-04-14)
+
+
+### Bug Fixes
+
+* fix submodule generation from makefile ([#21](https://github.com/CloudNationHQ/terraform-azure-lb/issues/21)) ([be20946](https://github.com/CloudNationHQ/terraform-azure-lb/commit/be2094682b1a5e0290dfe65fd59a0eb1933207ad))
+
 ## [1.4.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.3.0...v1.4.0) (2025-03-20)
 
 
