@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.5.0...v2.0.0) (2025-05-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* The data structure changed, causing a recreate on existing resources.
+
+### Features
+
+* small refactor ([#24](https://github.com/CloudNationHQ/terraform-azure-lb/issues/24)) ([895ca86](https://github.com/CloudNationHQ/terraform-azure-lb/commit/895ca869d8c8d3bbb30651225243c32bab4d030b))
+
 ## [1.5.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.4.1...v1.5.0) (2025-05-08)
 
 
