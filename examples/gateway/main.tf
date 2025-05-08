@@ -40,13 +40,13 @@ module "network" {
 
 module "lb" {
   source  = "cloudnationhq/lb/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   config = {
-    name           = module.naming.lb.name_unique
-    location       = module.rg.groups.demo.location
-    resource_group = module.rg.groups.demo.name
-    sku            = "Gateway"
+    name                = module.naming.lb.name_unique
+    location            = module.rg.groups.demo.location
+    resource_group_name = module.rg.groups.demo.name
+    sku                 = "Gateway"
 
     frontend_ip_configurations = {
       private = {

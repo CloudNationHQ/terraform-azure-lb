@@ -2,8 +2,8 @@
 resource "azurerm_lb" "lb" {
   resource_group_name = coalesce(
     lookup(
-      var.config, "resource_group", null
-    ), var.resource_group
+      var.config, "resource_group_name", null
+    ), var.resource_group_name
   )
 
   location = coalesce(
@@ -16,7 +16,7 @@ resource "azurerm_lb" "lb" {
   sku_tier  = var.config.sku_tier
   edge_zone = var.config.edge_zone
 
-  tags = try(
+  tags = coalesce(
     var.config.tags, var.tags
   )
 
