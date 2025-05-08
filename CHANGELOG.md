@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.4.1...v1.5.0) (2025-05-08)
+
+
+### Features
+
+* **deps:** bump golang.org/x/net from 0.36.0 to 0.38.0 in /tests ([#23](https://github.com/CloudNationHQ/terraform-azure-lb/issues/23)) ([a861042](https://github.com/CloudNationHQ/terraform-azure-lb/commit/a86104252935593e591997c3e3f548b68babfd30))
+
 ## [1.4.1](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.4.0...v1.4.1) (2025-04-14)
 
 
