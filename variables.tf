@@ -1,13 +1,13 @@
 variable "config" {
   description = "Contains all load balancer configuration"
   type = object({
-    name           = string
-    resource_group = optional(string, null)
-    location       = optional(string, null)
-    sku            = optional(string, "Standard")
-    sku_tier       = optional(string, "Regional")
-    edge_zone      = optional(string, null)
-    tags           = optional(map(string), null)
+    name                = string
+    resource_group_name = optional(string, null)
+    location            = optional(string, null)
+    sku                 = optional(string, "Standard")
+    sku_tier            = optional(string, "Regional")
+    edge_zone           = optional(string, null)
+    tags                = optional(map(string))
     frontend_ip_configurations = optional(map(object({
       zones                                              = optional(list(string), null)
       subnet_id                                          = optional(string, null)
@@ -86,7 +86,7 @@ variable "config" {
   }
 
   validation {
-    condition     = var.config.resource_group != null || var.resource_group != null
+    condition     = var.config.resource_group_name != null || var.resource_group_name != null
     error_message = "resource group name must be provided either in the config object or as a separate variable."
   }
 }
@@ -97,7 +97,7 @@ variable "location" {
   default     = null
 }
 
-variable "resource_group" {
+variable "resource_group_name" {
   description = "default resource group to be used."
   type        = string
   default     = null

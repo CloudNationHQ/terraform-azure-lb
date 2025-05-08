@@ -45,13 +45,13 @@ module "public_ip" {
 
 module "lb" {
   source  = "cloudnationhq/lb/azure"
-  version = "~> 1.0"
+  version = "~> 2.0"
 
   config = {
-    name           = module.naming.lb.name_unique
-    resource_group = module.rg.groups.demo.name
-    location       = module.rg.groups.demo.location
-    sku            = "Standard"
+    name                = module.naming.lb.name_unique
+    resource_group_name = module.rg.groups.demo.name
+    location            = module.rg.groups.demo.location
+    sku                 = "Standard"
 
     frontend_ip_configurations = {
       public = {
