@@ -112,7 +112,7 @@ variable "config" {
     condition = alltrue(flatten([
       for pool in var.config.backend_pools : [
         for rule in pool.rules :
-        rule.probe != null && contains(["Http", "Https"], rule.probe.protocol) ? 
+        rule.probe != null && contains(["Http", "Https"], rule.probe.protocol) ?
         rule.probe.request_path != null : true
       ]
     ]))
@@ -160,7 +160,7 @@ variable "config" {
   }
 
   validation {
-    condition = var.config.sku == "Gateway" ? length(var.config.frontend_ip_configurations) <= 1 : true
+    condition     = var.config.sku == "Gateway" ? length(var.config.frontend_ip_configurations) <= 1 : true
     error_message = "Gateway load balancers can only have one frontend IP configuration."
   }
 
@@ -173,7 +173,7 @@ variable "config" {
   }
 
   validation {
-    condition = !(var.config.sku == "Basic" && var.config.sku_tier == "Global")
+    condition     = !(var.config.sku == "Basic" && var.config.sku_tier == "Global")
     error_message = "Basic SKU does not support Global tier - use Standard or Gateway SKU for Global tier."
   }
 }
