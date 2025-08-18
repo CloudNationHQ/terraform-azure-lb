@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v2.0.0...v2.0.1) (2025-08-18)
+
+
+### Bug Fixes
+
+* improve variable type definitions and add validation rules ([#29](https://github.com/CloudNationHQ/terraform-azure-lb/issues/29)) ([71e2bc2](https://github.com/CloudNationHQ/terraform-azure-lb/commit/71e2bc2039d41df96ffb6442df989e120146948b))
+
 ## [2.0.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v1.5.0...v2.0.0) (2025-05-08)
 
 
