@@ -30,9 +30,9 @@ variable "config" {
         protocol                = string
         frontend_port           = number
         backend_port            = number
-        enable_tcp_reset        = optional(bool)
+        tcp_reset_enabled       = optional(bool)
         idle_timeout_in_minutes = optional(number)
-        enable_floating_ip      = optional(bool)
+        floating_ip_enabled     = optional(bool)
         frontend_port_start     = optional(number)
         frontend_port_end       = optional(number)
         backend_address_pool_id = optional(string)
@@ -57,11 +57,11 @@ variable "config" {
         frontend_port                  = number
         backend_port                   = number
         frontend_ip_configuration_name = string
-        enable_floating_ip             = optional(bool)
+        floating_ip_enabled            = optional(bool)
         idle_timeout_in_minutes        = optional(number, 4)
         load_distribution              = optional(string, "Default")
         disable_outbound_snat          = optional(bool, true)
-        enable_tcp_reset               = optional(bool)
+        tcp_reset_enabled              = optional(bool)
         probe = optional(object({
           port                = number
           protocol            = optional(string)
@@ -74,7 +74,7 @@ variable "config" {
       outbound_rules = optional(map(object({
         protocol                   = string
         allocated_outbound_ports   = optional(number)
-        enable_tcp_reset           = optional(bool)
+        tcp_reset_enabled          = optional(bool)
         idle_timeout_in_minutes    = optional(number)
         frontend_ip_configurations = optional(list(string))
       })), {})
