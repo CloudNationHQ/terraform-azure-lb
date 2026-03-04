@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v2.0.1...v2.1.0) (2026-03-04)
+
+
+### Features
+
+* rename enable_tcp_reset and enable_floating_ip variables ([#41](https://github.com/CloudNationHQ/terraform-azure-lb/issues/41)) ([d0f392a](https://github.com/CloudNationHQ/terraform-azure-lb/commit/d0f392a8eb9345750c180c1c46e1a2476b8c214c))
+
 ## [2.0.1](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v2.0.0...v2.0.1) (2025-08-18)
 
 
