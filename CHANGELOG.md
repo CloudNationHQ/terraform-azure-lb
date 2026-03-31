@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.0.0...v3.1.0) (2026-03-31)
+
+
+### Features
+
+* **deps:** bump github.com/ulikunitz/xz from 0.5.10 to 0.5.14 in /tests ([#32](https://github.com/CloudNationHQ/terraform-azure-lb/issues/32)) ([5783f84](https://github.com/CloudNationHQ/terraform-azure-lb/commit/5783f84e6a397c4c7c2f506c4a20fd7bbfec7f0f))
+* support backend address pool key references in nat rules ([#46](https://github.com/CloudNationHQ/terraform-azure-lb/issues/46)) ([7f6f1c9](https://github.com/CloudNationHQ/terraform-azure-lb/commit/7f6f1c97b0c4b2913c36322855e1c87e3d02925c))
+
 ## [3.0.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v2.1.0...v3.0.0) (2026-03-04)
 
 
