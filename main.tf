@@ -136,12 +136,12 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
   frontend_port                  = each.value.frontend_port
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_key
-  enable_tcp_reset               = each.value.enable_tcp_reset
+  tcp_reset_enabled              = each.value.tcp_reset_enabled
   idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
-  enable_floating_ip             = each.value.enable_floating_ip
+  floating_ip_enabled            = each.value.floating_ip_enabled
   frontend_port_start            = each.value.frontend_port_start
   frontend_port_end              = each.value.frontend_port_end
-  backend_address_pool_id        = each.value.backend_address_pool_id
+  backend_address_pool_id        = each.value.backend_address_pool_key != null ? azurerm_lb_backend_address_pool.pools[each.value.backend_address_pool_key].id : each.value.backend_address_pool_id
 }
 
 # probes
@@ -197,11 +197,11 @@ resource "azurerm_lb_rule" "rules" {
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.pools[each.value.pool_key].id]
   probe_id                       = lookup(each.value, "probe", null) != null ? azurerm_lb_probe.probes[each.key].id : null
-  enable_floating_ip             = each.value.enable_floating_ip
+  floating_ip_enabled            = each.value.floating_ip_enabled
   idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
   load_distribution              = each.value.load_distribution
   disable_outbound_snat          = each.value.disable_outbound_snat
-  enable_tcp_reset               = each.value.enable_tcp_reset
+  tcp_reset_enabled              = each.value.tcp_reset_enabled
 }
 
 # outbound rules
@@ -225,7 +225,7 @@ resource "azurerm_lb_outbound_rule" "outbound_rules" {
   protocol                 = each.value.protocol
   backend_address_pool_id  = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
   allocated_outbound_ports = each.value.allocated_outbound_ports
-  enable_tcp_reset         = each.value.enable_tcp_reset
+  tcp_reset_enabled        = each.value.tcp_reset_enabled
   idle_timeout_in_minutes  = each.value.idle_timeout_in_minutes
 
   dynamic "frontend_ip_configuration" {

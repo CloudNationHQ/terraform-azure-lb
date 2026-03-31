@@ -56,19 +56,20 @@ module "lb" {
     frontend_ip_configurations = {
       public = {
         public_ip_address_id = module.public_ip.configs.pub.id
-        nat_pools = {
-          pool1 = {
-            protocol            = "Tcp"
-            frontend_port_start = 50000
-            frontend_port_end   = 50119
-            backend_port        = 22
-          }
-        }
         nat_rules = {
-          rule1 = {
-            protocol      = "Tcp"
-            frontend_port = 3389
-            backend_port  = 3389
+          ssh = {
+            protocol                 = "Tcp"
+            frontend_port_start      = 2200
+            frontend_port_end        = 2299
+            backend_port             = 22
+            backend_address_pool_key = "web_pool"
+          }
+          rdp = {
+            protocol                 = "Tcp"
+            frontend_port_start      = 3300
+            frontend_port_end        = 3399
+            backend_port             = 3389
+            backend_address_pool_key = "web_pool"
           }
         }
       }
@@ -80,30 +81,6 @@ module "lb" {
           server1 = {
             virtual_network_id = module.network.vnet.id
             ip_address         = "10.19.1.4"
-          },
-          server2 = {
-            virtual_network_id = module.network.vnet.id
-            ip_address         = "10.19.1.5"
-          }
-        }
-        rules = {
-          http = {
-            protocol                       = "Tcp"
-            frontend_port                  = 80
-            backend_port                   = 80
-            frontend_ip_configuration_name = "public"
-            disable_outbound_snat          = true
-            probe = {
-              protocol     = "Http"
-              port         = 80
-              request_path = "/"
-            }
-          }
-        }
-        outbound_rules = {
-          outbound1 = {
-            protocol                   = "Tcp"
-            frontend_ip_configurations = ["public"]
           }
         }
       }

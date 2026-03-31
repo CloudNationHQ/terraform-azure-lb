@@ -27,15 +27,16 @@ variable "config" {
         idle_timeout_in_minutes = optional(number, 4)
       })), {})
       nat_rules = optional(map(object({
-        protocol                = string
-        frontend_port           = number
-        backend_port            = number
-        enable_tcp_reset        = optional(bool)
-        idle_timeout_in_minutes = optional(number)
-        enable_floating_ip      = optional(bool)
-        frontend_port_start     = optional(number)
-        frontend_port_end       = optional(number)
-        backend_address_pool_id = optional(string)
+        protocol                 = string
+        frontend_port            = optional(number)
+        backend_port             = number
+        tcp_reset_enabled        = optional(bool)
+        idle_timeout_in_minutes  = optional(number)
+        floating_ip_enabled      = optional(bool)
+        frontend_port_start      = optional(number)
+        frontend_port_end        = optional(number)
+        backend_address_pool_id  = optional(string)
+        backend_address_pool_key = optional(string)
       })), {})
     })), {})
     backend_pools = optional(map(object({
@@ -57,11 +58,11 @@ variable "config" {
         frontend_port                  = number
         backend_port                   = number
         frontend_ip_configuration_name = string
-        enable_floating_ip             = optional(bool)
+        floating_ip_enabled            = optional(bool)
         idle_timeout_in_minutes        = optional(number, 4)
         load_distribution              = optional(string, "Default")
         disable_outbound_snat          = optional(bool, true)
-        enable_tcp_reset               = optional(bool)
+        tcp_reset_enabled              = optional(bool)
         probe = optional(object({
           port                = number
           protocol            = optional(string)
@@ -74,7 +75,7 @@ variable "config" {
       outbound_rules = optional(map(object({
         protocol                   = string
         allocated_outbound_ports   = optional(number)
-        enable_tcp_reset           = optional(bool)
+        tcp_reset_enabled          = optional(bool)
         idle_timeout_in_minutes    = optional(number)
         frontend_ip_configurations = optional(list(string))
       })), {})
@@ -157,6 +158,26 @@ variable "config" {
       ]
     ]))
     error_message = "frontend_ip_configuration_name in rules must reference an existing frontend IP configuration key."
+  }
+
+  validation {
+    condition = alltrue(flatten([
+      for frontend in var.config.frontend_ip_configurations : [
+        for rule in frontend.nat_rules :
+        !(rule.backend_address_pool_id != null && rule.backend_address_pool_key != null)
+      ]
+    ]))
+    error_message = "NAT rules cannot specify both backend_address_pool_id and backend_address_pool_key."
+  }
+
+  validation {
+    condition = alltrue(flatten([
+      for frontend in var.config.frontend_ip_configurations : [
+        for rule in frontend.nat_rules :
+        rule.backend_address_pool_key != null ? contains(keys(var.config.backend_pools), rule.backend_address_pool_key) : true
+      ]
+    ]))
+    error_message = "NAT rule backend_address_pool_key must reference an existing backend pool key."
   }
 
   validation {
