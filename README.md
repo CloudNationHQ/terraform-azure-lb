@@ -86,15 +86,16 @@ object({
         idle_timeout_in_minutes = optional(number, 4)
       })), {})
       nat_rules = optional(map(object({
-        protocol                = string
-        frontend_port           = number
-        backend_port            = number
-        tcp_reset_enabled       = optional(bool)
-        idle_timeout_in_minutes = optional(number)
-        floating_ip_enabled     = optional(bool)
-        frontend_port_start     = optional(number)
-        frontend_port_end       = optional(number)
-        backend_address_pool_id = optional(string)
+        protocol                 = string
+        frontend_port            = number
+        backend_port             = number
+        tcp_reset_enabled        = optional(bool)
+        idle_timeout_in_minutes  = optional(number)
+        floating_ip_enabled      = optional(bool)
+        frontend_port_start      = optional(number)
+        frontend_port_end        = optional(number)
+        backend_address_pool_id  = optional(string)
+        backend_address_pool_key = optional(string)
       })), {})
     })), {})
     backend_pools = optional(map(object({

@@ -141,7 +141,7 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
   floating_ip_enabled            = each.value.floating_ip_enabled
   frontend_port_start            = each.value.frontend_port_start
   frontend_port_end              = each.value.frontend_port_end
-  backend_address_pool_id        = each.value.backend_address_pool_id
+  backend_address_pool_id        = each.value.backend_address_pool_key != null ? azurerm_lb_backend_address_pool.pools[each.value.backend_address_pool_key].id : each.value.backend_address_pool_id
 }
 
 # probes
