@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.1.0...v3.2.0) (2026-04-06)
+
+
+### Features
+
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#48](https://github.com/CloudNationHQ/terraform-azure-lb/issues/48)) ([d5f2a21](https://github.com/CloudNationHQ/terraform-azure-lb/commit/d5f2a2184fb24785acc0d06bc66890709e64ad52))
+
 ## [3.1.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.0.0...v3.1.0) (2026-03-31)
 
 
