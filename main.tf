@@ -11,10 +11,12 @@ resource "azurerm_lb" "lb" {
     ), var.location
   )
 
-  name      = var.config.name
-  sku       = var.config.sku
-  sku_tier  = var.config.sku_tier
-  edge_zone = var.config.edge_zone
+  name                 = var.config.name
+  sku                  = var.config.sku
+  sku_tier             = var.config.sku_tier
+  edge_zone            = var.config.edge_zone
+  subnet_id            = var.config.subnet_id
+  public_ip_address_id = var.config.public_ip_address_id
 
   tags = coalesce(
     var.config.tags, var.tags
