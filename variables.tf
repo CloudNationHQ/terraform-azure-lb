@@ -1,13 +1,15 @@
 variable "config" {
   description = "Contains all load balancer configuration"
   type = object({
-    name                = string
-    resource_group_name = optional(string)
-    location            = optional(string)
-    sku                 = optional(string, "Standard")
-    sku_tier            = optional(string, "Regional")
-    edge_zone           = optional(string)
-    tags                = optional(map(string))
+    name                 = string
+    resource_group_name  = optional(string)
+    location             = optional(string)
+    sku                  = optional(string, "Standard")
+    sku_tier             = optional(string, "Regional")
+    edge_zone            = optional(string)
+    public_ip_address_id = optional(string)
+    subnet_id            = optional(string)
+    tags                 = optional(map(string))
     frontend_ip_configurations = optional(map(object({
       zones                                              = optional(set(string))
       subnet_id                                          = optional(string)
