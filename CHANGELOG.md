@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.2.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.1.0...v3.2.0) (2026-07-10)
+
+
+### Features
+
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#48](https://github.com/CloudNationHQ/terraform-azure-lb/issues/48)) ([d5f2a21](https://github.com/CloudNationHQ/terraform-azure-lb/commit/d5f2a2184fb24785acc0d06bc66890709e64ad52))
+* **deps:** bump github.com/cloudnationhq/az-cn-go-validor in /tests ([#51](https://github.com/CloudNationHQ/terraform-azure-lb/issues/51)) ([3dcdaaa](https://github.com/CloudNationHQ/terraform-azure-lb/commit/3dcdaaa20592ddb39b0c99819342ac7807c05f6d))
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /tests ([#58](https://github.com/CloudNationHQ/terraform-azure-lb/issues/58)) ([45af644](https://github.com/CloudNationHQ/terraform-azure-lb/commit/45af644f03197f9d413e6ee2259d74f2133f096c))
+
 ## [3.1.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.0.0...v3.1.0) (2026-03-31)
 
 
