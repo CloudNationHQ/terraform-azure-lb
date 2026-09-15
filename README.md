@@ -99,6 +99,7 @@ object({
       })), {})
     })), {})
     backend_pools = optional(map(object({
+      name               = optional(string)
       virtual_network_id = optional(string)
       synchronous_mode   = optional(string)
       tunnel_interfaces = optional(map(object({
@@ -123,12 +124,13 @@ object({
         disable_outbound_snat          = optional(bool, true)
         tcp_reset_enabled              = optional(bool)
         probe = optional(object({
-          port                = number
-          protocol            = optional(string)
-          request_path        = optional(string)
-          interval_in_seconds = optional(number, 15)
-          number_of_probes    = optional(number)
-          probe_threshold     = optional(number)
+          port                         = number
+          protocol                     = optional(string)
+          request_path                 = optional(string)
+          interval_in_seconds          = optional(number, 15)
+          number_of_probes             = optional(number)
+          probe_threshold              = optional(number)
+          no_healthy_backends_behavior = optional(string)
         }), null)
       })), {})
       outbound_rules = optional(map(object({

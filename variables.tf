@@ -65,12 +65,13 @@ variable "loadbalancer" {
         disable_outbound_snat          = optional(bool, true)
         tcp_reset_enabled              = optional(bool)
         probe = optional(object({
-          port                = number
-          protocol            = optional(string)
-          request_path        = optional(string)
-          interval_in_seconds = optional(number, 15)
-          number_of_probes    = optional(number)
-          probe_threshold     = optional(number)
+          port                         = number
+          protocol                     = optional(string)
+          request_path                 = optional(string)
+          interval_in_seconds          = optional(number, 15)
+          number_of_probes             = optional(number)
+          probe_threshold              = optional(number)
+          no_healthy_backends_behavior = optional(string)
         }), null)
       })), {})
       outbound_rules = optional(map(object({

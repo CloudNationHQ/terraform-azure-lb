@@ -79,6 +79,17 @@ resource "azurerm_lb_backend_address_pool_address" "this" {
   backend_address_ip_configuration_id = each.value.backend_address_ip_configuration_id
   virtual_network_id                  = each.value.virtual_network_id
   ip_address                          = each.value.ip_address
+
+  # the provider locks this resource on the pool name, every other lb child
+  # resource locks on the lb id, so they can hit ARM concurrently and return
+  # 409 AnotherOperationInProgress.
+  depends_on = [
+    azurerm_lb_nat_pool.this,
+    azurerm_lb_nat_rule.this,
+    azurerm_lb_probe.this,
+    azurerm_lb_rule.this,
+    azurerm_lb_outbound_rule.this,
+  ]
 }
 
 # nat pools
@@ -160,14 +171,15 @@ resource "azurerm_lb_probe" "this" {
     item.key => item.value
   }
 
-  name                = each.value.name
-  loadbalancer_id     = azurerm_lb.this.id
-  port                = each.value.port
-  protocol            = each.value.protocol
-  request_path        = each.value.request_path
-  interval_in_seconds = each.value.interval_in_seconds
-  number_of_probes    = each.value.number_of_probes
-  probe_threshold     = each.value.probe_threshold
+  name                         = each.value.name
+  loadbalancer_id              = azurerm_lb.this.id
+  port                         = each.value.port
+  protocol                     = each.value.protocol
+  request_path                 = each.value.request_path
+  interval_in_seconds          = each.value.interval_in_seconds
+  number_of_probes             = each.value.number_of_probes
+  probe_threshold              = each.value.probe_threshold
+  no_healthy_backends_behavior = each.value.no_healthy_backends_behavior
 }
 
 # rules
