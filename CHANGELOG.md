@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.2.0...v4.0.0) (2026-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* this change causes recreates
+
+### Features
+
+* azurerm provider 5 upgrade ([#60](https://github.com/CloudNationHQ/terraform-azure-lb/issues/60)) ([871e231](https://github.com/CloudNationHQ/terraform-azure-lb/commit/871e231d68731ac0ebabdcc97ee98297c58654a7))
+
 ## [3.2.0](https://github.com/CloudNationHQ/terraform-azure-lb/compare/v3.1.0...v3.2.0) (2026-07-10)
 
 
