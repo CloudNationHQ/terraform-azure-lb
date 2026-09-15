@@ -1,13 +1,13 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.26"
+  version = "~> 0.32"
 
   suffix = ["demo", "dev"]
 }
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   groups = {
     demo = {
@@ -19,9 +19,8 @@ module "rg" {
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 9.0"
+  version = "~> 10.0"
 
-  naming = local.naming
 
   vnet = {
     name                = module.naming.virtual_network.name
@@ -40,9 +39,9 @@ module "network" {
 
 module "lb" {
   source  = "cloudnationhq/lb/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
-  config = {
+  loadbalancer = {
     name                = module.naming.lb.name_unique
     location            = module.rg.groups.demo.location
     resource_group_name = module.rg.groups.demo.name
