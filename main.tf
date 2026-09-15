@@ -1,29 +1,24 @@
 # load balancer
-resource "azurerm_lb" "lb" {
+resource "azurerm_lb" "this" {
   resource_group_name = coalesce(
-    lookup(
-      var.config, "resource_group_name", null
-    ), var.resource_group_name
+    var.loadbalancer.resource_group_name, var.resource_group_name
   )
 
   location = coalesce(
-    lookup(var.config, "location", null
-    ), var.location
+    var.loadbalancer.location, var.location
   )
 
-  name      = var.config.name
-  sku       = var.config.sku
-  sku_tier  = var.config.sku_tier
-  edge_zone = var.config.edge_zone
+  name      = var.loadbalancer.name
+  sku       = var.loadbalancer.sku
+  sku_tier  = var.loadbalancer.sku_tier
+  edge_zone = var.loadbalancer.edge_zone
 
   tags = coalesce(
-    var.config.tags, var.tags
+    var.loadbalancer.tags, var.tags
   )
 
   dynamic "frontend_ip_configuration" {
-    for_each = lookup(
-      var.config, "frontend_ip_configurations", {}
-    )
+    for_each = var.loadbalancer.frontend_ip_configurations
 
     content {
       name                                               = frontend_ip_configuration.key
@@ -40,18 +35,20 @@ resource "azurerm_lb" "lb" {
 }
 
 # backend pools
-resource "azurerm_lb_backend_address_pool" "pools" {
-  for_each = lookup(
-    var.config, "backend_pools", {}
+resource "azurerm_lb_backend_address_pool" "this" {
+  for_each = var.loadbalancer.backend_pools
+
+  name = coalesce(
+    each.value.name, each.key
   )
 
-  name               = each.key
-  loadbalancer_id    = azurerm_lb.lb.id
+  loadbalancer_id    = azurerm_lb.this.id
   virtual_network_id = each.value.virtual_network_id
   synchronous_mode   = each.value.synchronous_mode
 
   dynamic "tunnel_interface" {
-    for_each = lookup(each.value, "tunnel_interfaces", {})
+    for_each = each.value.tunnel_interfaces
+
     content {
       identifier = tunnel_interface.value.identifier
       type       = tunnel_interface.value.type
@@ -62,11 +59,11 @@ resource "azurerm_lb_backend_address_pool" "pools" {
 }
 
 # backend pool addresses
-resource "azurerm_lb_backend_address_pool_address" "pool_addresses" {
+resource "azurerm_lb_backend_address_pool_address" "this" {
   for_each = {
     for item in flatten([
-      for pool_key, pool in lookup(var.config, "backend_pools", {}) : [
-        for addr_key, addr in lookup(pool, "addresses", {}) : {
+      for pool_key, pool in var.loadbalancer.backend_pools : [
+        for addr_key, addr in pool.addresses : {
           key = "${pool_key}-${addr_key}"
           value = merge(addr, {
             pool_key = pool_key,
@@ -78,18 +75,18 @@ resource "azurerm_lb_backend_address_pool_address" "pool_addresses" {
   }
 
   name                                = each.value.addr_key
-  backend_address_pool_id             = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
+  backend_address_pool_id             = azurerm_lb_backend_address_pool.this[each.value.pool_key].id
   backend_address_ip_configuration_id = each.value.backend_address_ip_configuration_id
   virtual_network_id                  = each.value.virtual_network_id
   ip_address                          = each.value.ip_address
 }
 
 # nat pools
-resource "azurerm_lb_nat_pool" "nat_pools" {
+resource "azurerm_lb_nat_pool" "this" {
   for_each = {
     for item in flatten([
-      for frontend_key, frontend in lookup(var.config, "frontend_ip_configurations", {}) : [
-        for pool_key, pool in lookup(frontend, "nat_pools", {}) : {
+      for frontend_key, frontend in var.loadbalancer.frontend_ip_configurations : [
+        for pool_key, pool in frontend.nat_pools : {
           key = "${frontend_key}-${pool_key}"
           value = merge(pool, {
             frontend_key = frontend_key,
@@ -100,8 +97,8 @@ resource "azurerm_lb_nat_pool" "nat_pools" {
     ]) : item.key => item.value
   }
 
-  resource_group_name            = azurerm_lb.lb.resource_group_name
-  loadbalancer_id                = azurerm_lb.lb.id
+  resource_group_name            = azurerm_lb.this.resource_group_name
+  loadbalancer_id                = azurerm_lb.this.id
   name                           = each.value.pool_key
   protocol                       = each.value.protocol
   frontend_port_start            = each.value.frontend_port_start
@@ -114,11 +111,11 @@ resource "azurerm_lb_nat_pool" "nat_pools" {
 }
 
 # nat rules
-resource "azurerm_lb_nat_rule" "nat_rules" {
+resource "azurerm_lb_nat_rule" "this" {
   for_each = {
     for item in flatten([
-      for frontend_key, frontend in lookup(var.config, "frontend_ip_configurations", {}) : [
-        for rule_key, rule in lookup(frontend, "nat_rules", {}) : {
+      for frontend_key, frontend in var.loadbalancer.frontend_ip_configurations : [
+        for rule_key, rule in frontend.nat_rules : {
           key = "${frontend_key}-${rule_key}"
           value = merge(rule, {
             frontend_key = frontend_key,
@@ -129,8 +126,8 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
     ]) : item.key => item.value
   }
 
-  resource_group_name            = azurerm_lb.lb.resource_group_name
-  loadbalancer_id                = azurerm_lb.lb.id
+  resource_group_name            = azurerm_lb.this.resource_group_name
+  loadbalancer_id                = azurerm_lb.this.id
   name                           = each.value.rule_key
   protocol                       = each.value.protocol
   frontend_port                  = each.value.frontend_port
@@ -141,15 +138,15 @@ resource "azurerm_lb_nat_rule" "nat_rules" {
   floating_ip_enabled            = each.value.floating_ip_enabled
   frontend_port_start            = each.value.frontend_port_start
   frontend_port_end              = each.value.frontend_port_end
-  backend_address_pool_id        = each.value.backend_address_pool_key != null ? azurerm_lb_backend_address_pool.pools[each.value.backend_address_pool_key].id : each.value.backend_address_pool_id
+  backend_address_pool_id        = each.value.backend_address_pool_key != null ? azurerm_lb_backend_address_pool.this[each.value.backend_address_pool_key].id : each.value.backend_address_pool_id
 }
 
 # probes
-resource "azurerm_lb_probe" "probes" {
+resource "azurerm_lb_probe" "this" {
   for_each = {
     for item in flatten([
-      for pool_key, pool in lookup(var.config, "backend_pools", {}) : [
-        for rule_key, rule in lookup(pool, "rules", {}) : {
+      for pool_key, pool in var.loadbalancer.backend_pools : [
+        for rule_key, rule in pool.rules : {
           key = "${pool_key}-${rule_key}"
           value = merge(rule.probe, {
             name     = "${pool_key}-${rule_key}",
@@ -157,14 +154,14 @@ resource "azurerm_lb_probe" "probes" {
             rule_key = rule_key,
           })
         }
-        if lookup(rule, "probe", null) != null
+        if rule.probe != null
       ]
     ]) :
     item.key => item.value
   }
 
   name                = each.value.name
-  loadbalancer_id     = azurerm_lb.lb.id
+  loadbalancer_id     = azurerm_lb.this.id
   port                = each.value.port
   protocol            = each.value.protocol
   request_path        = each.value.request_path
@@ -174,11 +171,11 @@ resource "azurerm_lb_probe" "probes" {
 }
 
 # rules
-resource "azurerm_lb_rule" "rules" {
+resource "azurerm_lb_rule" "this" {
   for_each = {
     for item in flatten([
-      for pool_key, pool in lookup(var.config, "backend_pools", {}) : [
-        for rule_key, rule in lookup(pool, "rules", {}) : {
+      for pool_key, pool in var.loadbalancer.backend_pools : [
+        for rule_key, rule in pool.rules : {
           key = "${pool_key}-${rule_key}"
           value = merge(rule, {
             pool_key = pool_key,
@@ -190,13 +187,13 @@ resource "azurerm_lb_rule" "rules" {
   }
 
   name                           = each.key
-  loadbalancer_id                = azurerm_lb.lb.id
+  loadbalancer_id                = azurerm_lb.this.id
   protocol                       = each.value.protocol
   frontend_port                  = each.value.frontend_port
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
-  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.pools[each.value.pool_key].id]
-  probe_id                       = lookup(each.value, "probe", null) != null ? azurerm_lb_probe.probes[each.key].id : null
+  backend_address_pool_ids       = [azurerm_lb_backend_address_pool.this[each.value.pool_key].id]
+  probe_id                       = each.value.probe != null ? azurerm_lb_probe.this[each.key].id : null
   floating_ip_enabled            = each.value.floating_ip_enabled
   idle_timeout_in_minutes        = each.value.idle_timeout_in_minutes
   load_distribution              = each.value.load_distribution
@@ -205,11 +202,11 @@ resource "azurerm_lb_rule" "rules" {
 }
 
 # outbound rules
-resource "azurerm_lb_outbound_rule" "outbound_rules" {
+resource "azurerm_lb_outbound_rule" "this" {
   for_each = {
     for item in flatten([
-      for pool_key, pool in lookup(var.config, "backend_pools", {}) : [
-        for outbound_rule_key, outbound_rule in lookup(pool, "outbound_rules", {}) : {
+      for pool_key, pool in var.loadbalancer.backend_pools : [
+        for outbound_rule_key, outbound_rule in pool.outbound_rules : {
           key = "${pool_key}-${outbound_rule_key}"
           value = merge(outbound_rule, {
             pool_key          = pool_key,
@@ -220,10 +217,10 @@ resource "azurerm_lb_outbound_rule" "outbound_rules" {
     ]) : item.key => item.value
   }
 
-  loadbalancer_id          = azurerm_lb.lb.id
+  loadbalancer_id          = azurerm_lb.this.id
   name                     = each.value.outbound_rule_key
   protocol                 = each.value.protocol
-  backend_address_pool_id  = azurerm_lb_backend_address_pool.pools[each.value.pool_key].id
+  backend_address_pool_id  = azurerm_lb_backend_address_pool.this[each.value.pool_key].id
   allocated_outbound_ports = each.value.allocated_outbound_ports
   tcp_reset_enabled        = each.value.tcp_reset_enabled
   idle_timeout_in_minutes  = each.value.idle_timeout_in_minutes

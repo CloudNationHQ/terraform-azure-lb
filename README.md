@@ -27,32 +27,32 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 4.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 5.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 4.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 5.0)
 
 ## Resources
 
 The following resources are used by this module:
 
-- [azurerm_lb.lb](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb) (resource)
-- [azurerm_lb_backend_address_pool.pools](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool) (resource)
-- [azurerm_lb_backend_address_pool_address.pool_addresses](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool_address) (resource)
-- [azurerm_lb_nat_pool.nat_pools](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_pool) (resource)
-- [azurerm_lb_nat_rule.nat_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_rule) (resource)
-- [azurerm_lb_outbound_rule.outbound_rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_outbound_rule) (resource)
-- [azurerm_lb_probe.probes](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_probe) (resource)
-- [azurerm_lb_rule.rules](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) (resource)
+- [azurerm_lb.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb) (resource)
+- [azurerm_lb_backend_address_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool) (resource)
+- [azurerm_lb_backend_address_pool_address.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool_address) (resource)
+- [azurerm_lb_nat_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_pool) (resource)
+- [azurerm_lb_nat_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_nat_rule) (resource)
+- [azurerm_lb_outbound_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_outbound_rule) (resource)
+- [azurerm_lb_probe.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_probe) (resource)
+- [azurerm_lb_rule.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) (resource)
 
 ## Required Inputs
 
 The following input variables are required:
 
-### <a name="input_config"></a> [config](#input\_config)
+### <a name="input_loadbalancer"></a> [loadbalancer](#input\_loadbalancer)
 
 Description: Contains all load balancer configuration
 
@@ -63,16 +63,16 @@ object({
     name                = string
     resource_group_name = optional(string)
     location            = optional(string)
-    sku                 = optional(string, "Standard")
-    sku_tier            = optional(string, "Regional")
+    sku                 = optional(string)
+    sku_tier            = optional(string)
     edge_zone           = optional(string)
     tags                = optional(map(string))
     frontend_ip_configurations = optional(map(object({
       zones                                              = optional(set(string))
       subnet_id                                          = optional(string)
-      private_ip_address_allocation                      = optional(string, "Dynamic")
+      private_ip_address_allocation                      = optional(string)
       public_ip_prefix_id                                = optional(string)
-      private_ip_address_version                         = optional(string, "IPv4")
+      private_ip_address_version                         = optional(string)
       private_ip_address                                 = optional(string)
       public_ip_address_id                               = optional(string)
       gateway_load_balancer_frontend_ip_configuration_id = optional(string)
@@ -83,11 +83,11 @@ object({
         backend_port            = number
         tcp_reset_enabled       = optional(bool)
         floating_ip_enabled     = optional(bool)
-        idle_timeout_in_minutes = optional(number, 4)
+        idle_timeout_in_minutes = optional(number)
       })), {})
       nat_rules = optional(map(object({
         protocol                 = string
-        frontend_port            = number
+        frontend_port            = optional(number)
         backend_port             = number
         tcp_reset_enabled        = optional(bool)
         idle_timeout_in_minutes  = optional(number)
@@ -118,8 +118,8 @@ object({
         backend_port                   = number
         frontend_ip_configuration_name = string
         floating_ip_enabled            = optional(bool)
-        idle_timeout_in_minutes        = optional(number, 4)
-        load_distribution              = optional(string, "Default")
+        idle_timeout_in_minutes        = optional(number)
+        load_distribution              = optional(string)
         disable_outbound_snat          = optional(bool, true)
         tcp_reset_enabled              = optional(bool)
         probe = optional(object({
@@ -127,8 +127,8 @@ object({
           protocol            = optional(string)
           request_path        = optional(string)
           interval_in_seconds = optional(number, 15)
-          number_of_probes    = optional(number, 2)
-          probe_threshold     = optional(number, 1)
+          number_of_probes    = optional(number)
+          probe_threshold     = optional(number)
         }), null)
       })), {})
       outbound_rules = optional(map(object({
@@ -136,7 +136,7 @@ object({
         allocated_outbound_ports   = optional(number)
         tcp_reset_enabled          = optional(bool)
         idle_timeout_in_minutes    = optional(number)
-        frontend_ip_configurations = optional(list(string))
+        frontend_ip_configurations = optional(list(string), [])
       })), {})
     })), {})
   })
@@ -178,7 +178,7 @@ The following outputs are exported:
 
 Description: contains load balancer backend pools
 
-### <a name="output_config"></a> [config](#output\_config)
+### <a name="output_lb"></a> [lb](#output\_lb)
 
 Description: contains load balancer configuration
 
@@ -219,11 +219,7 @@ To update the module's documentation run `make doc`
 
 We welcome contributions from the community! Whether it's reporting a bug, suggesting a new feature, or submitting a pull request, your input is highly valued.
 
-For more information, please see our contribution [guidelines](./CONTRIBUTING.md). <br><br>
-
-<a href="https://github.com/cloudnationhq/terraform-azure-lb/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=cloudnationhq/terraform-azure-lb" />
-</a>
+For more information, please see our contribution [guidelines](./CONTRIBUTING.md).
 
 ## License
 

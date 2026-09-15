@@ -1,13 +1,13 @@
 module "naming" {
   source  = "cloudnationhq/naming/azure"
-  version = "~> 0.26"
+  version = "~> 0.32"
 
   suffix = ["demo", "dev"]
 }
 
 module "rg" {
   source  = "cloudnationhq/rg/azure"
-  version = "~> 2.0"
+  version = "~> 3.0"
 
   groups = {
     demo = {
@@ -19,8 +19,7 @@ module "rg" {
 
 module "network" {
   source  = "cloudnationhq/vnet/azure"
-  version = "~> 9.0"
-  naming  = local.naming
+  version = "~> 10.0"
 
   vnet = {
     name                = module.naming.virtual_network.name
@@ -32,9 +31,9 @@ module "network" {
 
 module "public_ip" {
   source  = "cloudnationhq/pip/azure"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
-  configs = {
+  public_ips = {
     pub = {
       name                = module.naming.public_ip.name
       location            = module.rg.groups.demo.location
@@ -45,9 +44,9 @@ module "public_ip" {
 
 module "lb" {
   source  = "cloudnationhq/lb/azure"
-  version = "~> 3.0"
+  version = "~> 4.0"
 
-  config = {
+  loadbalancer = {
     name                = module.naming.lb.name_unique
     resource_group_name = module.rg.groups.demo.name
     location            = module.rg.groups.demo.location
@@ -55,7 +54,7 @@ module "lb" {
 
     frontend_ip_configurations = {
       public = {
-        public_ip_address_id = module.public_ip.configs.pub.id
+        public_ip_address_id = module.public_ip.public_ips.pub.id
         nat_rules = {
           ssh = {
             protocol                 = "Tcp"
